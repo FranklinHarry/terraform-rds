@@ -57,12 +57,12 @@ locals {
   lambda_default_environment_variables = {
     TARGET_ACCOUNT_ID          = data.aws_caller_identity.target.account_id
     TARGET_ACCOUNT_IAM_ROLE    = aws_iam_role.target_lambda.arn
-    TARGET_REGION              = data.aws_region.target.name
+    TARGET_REGION              = data.aws_region.target.region
     TARGET_ACCOUNT_KMS_KEY_ARN = data.aws_kms_key.target_key.arn
     RDS_INSTANCE_IDS           = join(",", var.rds_instance_ids)
     SETUP_NAME                 = local.setup_name
     TYPE                       = "cross-account"
-    SOURCE_REGION              = data.aws_region.source.name
+    SOURCE_REGION              = data.aws_region.source.region
     RETENTION_PERIOD           = var.retention_period
     IS_CLUSTER                 = tostring(var.is_aurora_cluster)
   }
@@ -75,7 +75,7 @@ locals {
 {
   "detail-type": ["RDS DB Cluster Snapshot Event"],
   "source": ["aws.rds"],
-  "region": ["${data.aws_region.source.name}"],
+  "region": ["${data.aws_region.source.region}"],
   "detail": {
     "EventCategories": ["backup"],
     "SourceType": ["CLUSTER_SNAPSHOT"],
@@ -90,7 +90,7 @@ EOF
 {
   "source": ["aws.rds"],
   "detail-type": ["RDS DB Snapshot Event"],
-  "region": ["${data.aws_region.source.name}"],
+  "region": ["${data.aws_region.source.region}"],
   "detail": {
     "SourceIdentifier": ${jsonencode(local.event_rule_pattern)},
     "Message": ["Manual snapshot created"],
@@ -104,7 +104,7 @@ EOF
 {
   "source": ["aws.rds"],
   "detail-type": ["RDS DB Snapshot Event"],
-  "region": ["${data.aws_region.intermediate.name}"],
+  "region": ["${data.aws_region.intermediate.region}"],
   "detail": {
     "SourceIdentifier": ${jsonencode(local.event_rule_pattern)},
     "Message": [{"prefix": "Finished copy of snapshot "}],
