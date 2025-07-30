@@ -1,9 +1,9 @@
 locals {
-  source_snapshot_arns = [for id in var.rds_instance_ids : "arn:aws:rds:${data.aws_region.source.name}:${data.aws_caller_identity.source.account_id}:${var.is_aurora_cluster ? "cluster-" : ""}snapshot:${id}-*"]
+  source_snapshot_arns = [for id in var.rds_instance_ids : "arn:aws:rds:${data.aws_region.source.region}:${data.aws_caller_identity.source.account_id}:${var.is_aurora_cluster ? "cluster-" : ""}snapshot:${id}-*"]
 
-  intermediate_snapshot_arns = [for id in var.rds_instance_ids : "arn:aws:rds:${data.aws_region.intermediate.name}:${data.aws_caller_identity.source.account_id}:${var.is_aurora_cluster ? "cluster-" : ""}snapshot:${id}-*"]
+  intermediate_snapshot_arns = [for id in var.rds_instance_ids : "arn:aws:rds:${data.aws_region.intermediate.region}:${data.aws_caller_identity.source.account_id}:${var.is_aurora_cluster ? "cluster-" : ""}snapshot:${id}-*"]
 
-  target_snapshot_arns = [for id in var.rds_instance_ids : "arn:aws:rds:${data.aws_region.target.name}:${data.aws_caller_identity.target.account_id}:${var.is_aurora_cluster ? "cluster-" : ""}snapshot:${id}-*"]
+  target_snapshot_arns = [for id in var.rds_instance_ids : "arn:aws:rds:${data.aws_region.target.region}:${data.aws_caller_identity.target.account_id}:${var.is_aurora_cluster ? "cluster-" : ""}snapshot:${id}-*"]
 
   ### Gather the KMS keys used by the configured RDS instances
   source_kms_key_ids = var.is_aurora_cluster ? compact([for rds in data.aws_rds_cluster.rds : rds.kms_key_id]) : compact([for rds in data.aws_db_instance.rds : rds.kms_key_id])
