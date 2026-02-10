@@ -10,6 +10,10 @@ output "aurora_cluster_instances_id" {
   value = aws_rds_cluster_instance.cluster_instances.*.id
 }
 
+output "aurora_cluster_instances_arn" {
+  value = aws_rds_cluster_instance.cluster_instances.*.arn
+}
+
 output "aurora_port" {
   value = local.port
 }
